@@ -1,0 +1,21 @@
+name: Deploy FormFlow Academy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull latest code
+        run: |
+          cd ~/formflow_academy
+          git pull origin main
+
+      - name: Rebuild and restart containers
+        run: |
+          cd ~/formflow_academy
+          docker compose up -d --build
