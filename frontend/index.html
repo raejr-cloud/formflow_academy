@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FormFlow Academy</title>
+  <style>
+    body { font-family: sans-serif; max-width: 500px; margin: 40px auto; }
+    input, button { padding: 8px; margin: 4px 0; width: 100%; box-sizing: border-box; }
+    li { margin: 6px 0; }
+  </style>
+</head>
+<body>
+  <h1>FormFlow Academy</h1>
+  <p><strong>Release Version:</strong> <span id="version">v1.0.0</span></p>
+
+  <form id="studentForm">
+    <input type="text" id="name" placeholder="Student Name" required />
+    <input type="email" id="email" placeholder="Student Email" required />
+    <button type="submit">Register Student</button>
+  </form>
+
+  <h3>Enrolled Students</h3>
+  <ul id="studentList"></ul>
+
+  <script>
+    async function loadStudents() {
+      const res = await fetch("/api/students");
+      const students = await res.json();
+      document.getElementById("studentList").innerHTML = students
+        .map((s) => `<li>${s.name} — ${s.email}</li>`)
+        .join("");
+    }
+
+    document.getElementById("studentForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await fetch("/api/students", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+        }),
+      });
+      e.target.reset();
+      loadStudents();
+    });
+
+    loadStudents();
+  </script>
+</body>
+</html>

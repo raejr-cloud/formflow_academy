@@ -1,0 +1,32 @@
+services:
+  db:
+    container_name: formflow_data
+    image: postgres:16
+    environment:
+      POSTGRES_DB: formflow_data
+      POSTGRES_USER: formflow_user
+      POSTGRES_PASSWORD: formflow_password
+    volumes:
+      - formflow_data:/var/lib/postgresql/data
+
+  frontend:
+    container_name: formflow_frontend
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+  backend:
+    container_name: formflow_backend
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      POSTGRES_DB: formflow_data
+      POSTGRES_USER: formflow_user
+      POSTGRES_PASSWORD: formflow_password
+    depends_on:
+      - db
+
+volumes:
+  formflow_data:
